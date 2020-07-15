@@ -20,10 +20,12 @@ jobs:
         go-version: ${{ matrix.go-version }}
     - name: Checkout code
       uses: actions/checkout@v2
+    - name: Test
+      run: go test ./...
     - name: Build
-      run: mkdir dist && go build -tags "full" -o dist
+      run: make
     - name: Upload Binary
       uses: actions/upload-artifact@v1
       with:
-        name: dist-${{ matrix.platform }}
-        path: ./dist/
+        name: build-${{ matrix.platform }}
+        path: ./build/

@@ -8,22 +8,27 @@
         "your_password"
     ],
     "ssl": {
-        "sni": "your_domain_name"
+        "sni": "your-domain-name.com"
     },
-    "mux" :{
+    "mux": {
         "enabled": true
     },
-    "router":{
+    "router": {
         "enabled": true,
         "bypass": [
             "geoip:cn",
+            "geoip:private",
             "geosite:cn",
-            "geosite:private"
+            "geosite:geolocation-cn"
         ],
         "block": [
             "geosite:category-ads"
         ],
-        "proxy": [],
-        "route_by_ip_on_nonmatch": true
+        "proxy": [
+            "geosite:geolocation-!cn"
+        ],
+        "default_policy": "proxy",
+        "geoip": "/usr/share/trojan-go/geoip.dat",
+        "geosite": "/usr/share/trojan-go/geosite.dat"
     }
 }
