@@ -7,10 +7,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/txthinking/socks5"
+
 	"github.com/p4gefau1t/trojan-go/common"
 	"github.com/p4gefau1t/trojan-go/test/util"
 	"github.com/p4gefau1t/trojan-go/tunnel"
-	"github.com/txthinking/socks5"
 )
 
 func TestConn(t *testing.T) {
@@ -72,7 +73,7 @@ func TestSocks(t *testing.T) {
 	}
 	target, err := tunnel.NewAddressFromAddr("tcp", util.EchoAddr)
 
-	s, _ := socks5.NewClassicServer(socksAddr.String(), "127.0.0.1", "", "", 0, 0, 0, 0)
+	s, _ := socks5.NewClassicServer(socksAddr.String(), "127.0.0.1", "", "", 0, 0)
 	s.Handle = &socks5.DefaultHandle{}
 	go s.RunTCPServer()
 	go s.RunUDPServer()

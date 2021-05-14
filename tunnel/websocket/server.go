@@ -9,12 +9,13 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/net/websocket"
+
 	"github.com/p4gefau1t/trojan-go/common"
 	"github.com/p4gefau1t/trojan-go/config"
 	"github.com/p4gefau1t/trojan-go/log"
 	"github.com/p4gefau1t/trojan-go/redirector"
 	"github.com/p4gefau1t/trojan-go/tunnel"
-	"golang.org/x/net/websocket"
 )
 
 // Fake response writer
@@ -98,7 +99,9 @@ func (s *Server) AcceptConn(tunnel.Tunnel) (tunnel.Conn, error) {
 	wsServer := websocket.Server{
 		Config: *wsConfig,
 		Handler: func(conn *websocket.Conn) {
-			wsConn = conn //store the websocket after handshaking
+			wsConn = conn                              // store the websocket after handshaking
+			wsConn.PayloadType = websocket.BinaryFrame // treat it as a binary websocket
+
 			log.Debug("websocket obtained")
 			handshake <- struct{}{}
 			// this function SHOULD NOT return unless the connection is ended

@@ -3,11 +3,9 @@ on:
     branches:
       - "master"
     paths-ignore:
-      - "**.md"
-      - "docs"
-    tags:
-      - "v*.*.*"
-name: docker-build
+      - '**.md'
+      - 'docs'
+name: docker-nightly-build
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,22 +28,15 @@ jobs:
       - name: Prepare
         id: prepare
         run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            echo ::set-output name=version::${GITHUB_REF#refs/tags/}
-            echo ::set-output name=ref::${GITHUB_REF#refs/tags/}
-          else
-            echo ::set-output name=version::snapshot
-            echo ::set-output name=ref::${{ github.sha }}
-          fi
           echo ::set-output name=docker_platforms::linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           echo ::set-output name=docker_image::${{ secrets.DOCKER_USERNAME }}/trojan-go
+          echo ::set-output name=ref::${{ github.sha }}
 
       - name: Build and push docker image
         run: |
           docker buildx build --platform ${{ steps.prepare.outputs.docker_platforms }} \
           --output "type=image,push=true" \
-          --tag "${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }}" \
-          --tag "${{ steps.prepare.outputs.docker_image }}:latest" \
+          --tag "${{ steps.prepare.outputs.docker_image }}:nightly" \
           --build-arg REF=${{ steps.prepare.outputs.ref }} \
           --file Dockerfile .
 
